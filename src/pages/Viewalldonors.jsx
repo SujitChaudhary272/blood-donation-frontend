@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Droplets, Phone, Mail, MapPin, Search, Filter, AlertCircle } from 'lucide-react';
-import { requestAPI } from '../services/api';
+import { API_URL, requestAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import './Viewalldonors.css';
 
@@ -31,7 +31,7 @@ const Viewalldonors = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/donors', {
+      const response = await fetch(`${API_URL}/donors`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

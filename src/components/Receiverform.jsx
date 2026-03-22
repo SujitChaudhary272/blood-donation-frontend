@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import './Receiverform.css';
+import { API_URL } from '../services/api';
 
 const Receiverregistration = ({ onSuccess, editMode = false, existingData = null }) => {
   const [formData, setFormData] = useState(
@@ -100,8 +101,8 @@ const Receiverregistration = ({ onSuccess, editMode = false, existingData = null
   const submitRequest = async (requestData) => {
     const token = localStorage.getItem('token');
     const url = editMode
-      ? `http://localhost:5000/api/requests/${existingData._id}`
-      : 'http://localhost:5000/api/requests';
+      ? `${API_URL}/requests/${existingData._id}`
+      : `${API_URL}/requests`;
     const method = editMode ? 'PUT' : 'POST';
 
     const response = await fetch(url, {

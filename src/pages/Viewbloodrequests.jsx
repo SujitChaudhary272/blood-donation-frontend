@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { FileText, Phone, Mail, MapPin, AlertCircle } from 'lucide-react';
 import './Viewbloodrequests.css';
+import { API_URL } from '../services/api';
 
 const Viewbloodrequests = () => {
   const { user } = useAuth();
@@ -25,7 +26,7 @@ const Viewbloodrequests = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/requests', {
+      const response = await fetch(`${API_URL}/requests`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -65,7 +66,7 @@ const Viewbloodrequests = () => {
         const token = localStorage.getItem('token');
         
         // Use the cancel endpoint
-        const response = await fetch(`http://localhost:5000/api/requests/${requestId}/cancel`, {
+        const response = await fetch(`${API_URL}/requests/${requestId}/cancel`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -92,7 +93,7 @@ const Viewbloodrequests = () => {
       try {
         const token = localStorage.getItem('token');
         
-        const response = await fetch(`http://localhost:5000/api/requests/${requestId}`, {
+        const response = await fetch(`${API_URL}/requests/${requestId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`,

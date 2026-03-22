@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_URL } from "../services/api";
 
 const RequestBlood = () => {
   const [formData, setFormData] = useState({
@@ -28,7 +29,7 @@ const RequestBlood = () => {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/api/blood/request", {
+      await axios.post(`${API_URL}/requests`, {
         patientName: formData.patientName,
         bloodGroup: formData.bloodGroup,
         unitsRequired: formData.unitsRequired,

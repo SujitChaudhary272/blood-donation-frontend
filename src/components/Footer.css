@@ -1,0 +1,343 @@
+/* ============================================
+   FOOTER STYLES
+   ============================================ */
+
+.footer {
+  background: var(--footer-bg, linear-gradient(135deg, var(--surface-muted) 0%, var(--surface-bg) 100%));
+  color: var(--text-primary);
+  padding: 2.5rem 1.5rem 1.25rem;
+  margin-top: auto;
+  border-top: 1px solid var(--footer-border, var(--surface-border));
+  position: relative;
+  overflow: hidden;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.45), transparent);
+}
+
+.footer::after {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -40px;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 72%);
+  pointer-events: none;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--surface-border);
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================
+   ABOUT SECTION
+   ============================================ */
+
+.footer-section.about-section {
+  max-width: 330px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.footer-icon {
+  color: #ef4444;
+  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.5));
+}
+
+.footer-logo h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.footer-section.about-section p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+/* ============================================
+   FOOTER SECTIONS
+   ============================================ */
+
+.footer-section h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  position: relative;
+  padding-bottom: 0.55rem;
+}
+
+.footer-section h4::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 42px;
+  height: 2px;
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+  border-radius: 2px;
+}
+
+/* ============================================
+   QUICK LINKS
+   ============================================ */
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.55rem;
+}
+
+.footer-section ul li a,
+.footer-link-btn {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+  position: relative;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.footer-link-btn {
+  width: 100%;
+}
+
+.footer-section ul li a::before,
+.footer-link-btn::before {
+  content: '→';
+  position: absolute;
+  left: -20px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  color: #ef4444;
+}
+
+.footer-section ul li a:hover,
+.footer-link-btn:hover {
+  color: #ef4444;
+  padding-left: 20px;
+}
+
+.footer-section ul li a:hover::before,
+.footer-link-btn:hover::before {
+  opacity: 1;
+  left: 0;
+}
+
+/* ============================================
+   CONTACT SECTION
+   ============================================ */
+
+.footer-contact {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.8rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.footer-contact svg {
+  color: #ef4444;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.footer-contact a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-contact a:hover {
+  color: #ef4444;
+}
+
+/* ============================================
+   SOCIAL ICONS
+   ============================================ */
+
+.social-icons {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.social-icons a {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border: 1px solid var(--surface-border);
+}
+
+.social-icons a:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+}
+
+.social-icons a svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================
+   FOOTER BOTTOM
+   ============================================ */
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+
+.copyright,
+.developer {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.copyright span,
+.developer span {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 2rem 1rem 1rem;
+  }
+
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .footer-section.about-section {
+    max-width: 100%;
+  }
+
+  .footer-bottom {
+    padding-top: 0.9rem;
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 1.75rem 0.85rem 0.9rem;
+  }
+
+  .footer-logo h3 {
+    font-size: 1.35rem;
+  }
+
+  .footer-section h4 {
+    font-size: 1rem;
+  }
+
+  .social-icons {
+    gap: 0.55rem;
+  }
+
+  .social-icons a {
+    width: 34px;
+    height: 34px;
+  }
+
+  .copyright,
+  .developer {
+    font-size: 0.85rem;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+.footer-section ul li a:focus,
+.footer-link-btn:focus,
+.social-icons a:focus,
+.footer-contact a:focus {
+  outline: 2px solid #ef4444;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .footer {
+    border-top: 2px solid #ef4444;
+  }
+
+  .social-icons a {
+    border-width: 2px;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .footer-section ul li a,
+  .footer-link-btn,
+  .social-icons a,
+  .footer-contact a {
+    transition: none;
+  }
+}

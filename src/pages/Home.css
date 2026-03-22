@@ -1,0 +1,659 @@
+/* ============================================
+   HOME PAGE STYLES
+   ============================================ */
+
+/* ============================================
+   GLOBAL RESETS & BASE STYLES
+   ============================================ */
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+/* ============================================
+   CONTAINER & GRID UTILITIES
+   ============================================ */
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.grid {
+  display: grid;
+}
+
+/* ============================================
+   CARD COMPONENTS
+   ============================================ */
+
+.card {
+  background: var(--surface-bg);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid var(--surface-border);
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border-color: #ef4444;
+}
+
+/* ============================================
+   BUTTON STYLES
+   ============================================ */
+
+.btn {
+  display: inline-block;
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  text-align: center;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background-color: #dc2626;
+  color: white;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
+}
+
+.btn-primary:hover {
+  background-color: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+
+.hero-section {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: white;
+  padding: 56px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: heroFloat 20s ease-in-out infinite;
+}
+
+@keyframes heroFloat {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(-50px, -50px) rotate(180deg);
+  }
+}
+
+.hero-grid {
+  display: grid;
+  gap: 32px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content h1 {
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.hero-content p {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.9);
+  animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  animation: fadeInUp 0.8s ease-out 0.4s backwards;
+}
+
+.hero-btn-white {
+  background-color: white;
+  color: #dc2626;
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.3);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.hero-btn-white:hover {
+  background-color: #f9fafb;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.4);
+}
+
+.hero-btn-outline {
+  background-color: transparent;
+  color: white;
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 2px solid white;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.hero-btn-outline:hover {
+  background-color: white;
+  color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.3);
+}
+
+.hero-visual {
+  display: none;
+}
+
+.hero-visual-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 22px;
+  text-align: center;
+  animation: floatVisual 6s ease-in-out infinite;
+}
+
+@keyframes floatVisual {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.hero-visual-card svg {
+  width: 156px;
+  height: 156px;
+  margin: 0 auto;
+  color: white;
+  filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
+}
+
+/* ============================================
+   FEATURES SECTION
+   ============================================ */
+
+.features-section {
+  padding: 56px 16px;
+  background-color: var(--app-bg);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 38px;
+}
+
+.section-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  position: relative;
+  display: inline-block;
+}
+
+.section-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+  border-radius: 2px;
+}
+
+.section-header p {
+  font-size: 17px;
+  color: var(--text-secondary);
+  margin-top: 18px;
+}
+
+.features-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.feature-card-icon {
+  color: #dc2626;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 2px 8px rgba(220, 38, 38, 0.3));
+}
+
+.card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.card p {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ============================================
+   STATS SECTION
+   ============================================ */
+
+.stats-section {
+  padding: 80px 16px;
+  background-color: #dc2626;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+}
+
+.stats-grid {
+  display: grid;
+  gap: 32px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInUp 0.8s ease-out backwards;
+}
+
+.stat-item:nth-child(1) { animation-delay: 0.1s; }
+.stat-item:nth-child(2) { animation-delay: 0.2s; }
+.stat-item:nth-child(3) { animation-delay: 0.3s; }
+.stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+.stat-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3));
+}
+
+.stat-icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.stat-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+}
+
+/* ============================================
+   WHY DONATE SECTION
+   ============================================ */
+
+.why-donate-section {
+  padding: 56px 16px;
+  background-color: var(--surface-bg);
+}
+
+.why-donate-grid {
+  display: grid;
+  gap: 28px;
+  align-items: center;
+}
+
+.why-donate-content h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 18px;
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.why-donate-content h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+  border-radius: 2px;
+}
+
+.benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.benefit-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 12px 10px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.benefit-item:hover {
+  background-color: #fef2f2;
+  transform: translateX(8px);
+}
+
+.benefit-icon {
+  background-color: #fee2e2;
+  padding: 10px;
+  border-radius: 8px;
+  height: fit-content;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.benefit-item:hover .benefit-icon {
+  background-color: #ef4444;
+}
+
+.benefit-item:hover .benefit-icon svg {
+  color: #ffffff !important;
+}
+
+.benefit-icon svg {
+  width: 24px;
+  height: 24px;
+  color: #dc2626;
+  transition: all 0.3s ease;
+}
+
+.benefit-text h3 {
+  font-weight: 600;
+  font-size: 17px;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
+
+.benefit-text p {
+  color: var(--text-secondary);
+  line-height: 1.45;
+  font-size: 13px;
+  margin: 0;
+}
+
+.cta-card {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  padding: 22px 22px 18px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(220, 38, 38, 0.15);
+  transition: all 0.3s ease;
+}
+
+.cta-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(220, 38, 38, 0.25);
+}
+
+.cta-card svg {
+  width: 88px;
+  height: 88px;
+  color: #dc2626;
+  margin: 0 auto 14px;
+  filter: drop-shadow(0 4px 12px rgba(220, 38, 38, 0.3));
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.cta-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.cta-card p {
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.45;
+  font-size: 13px;
+}
+
+.cta-card .btn {
+  padding: 11px 24px;
+  font-size: 14px;
+}
+
+html[data-theme='dark'] .hero-section {
+  background: linear-gradient(135deg, #7f1d1d, #111827);
+}
+
+html[data-theme='dark'] .features-section {
+  background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+}
+
+html[data-theme='dark'] .why-donate-section {
+  background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
+}
+
+html[data-theme='dark'] .benefit-item:hover {
+  background-color: rgba(239, 68, 68, 0.08);
+}
+
+html[data-theme='dark'] .benefit-icon {
+  background-color: rgba(248, 113, 113, 0.14);
+}
+
+html[data-theme='dark'] .cta-card {
+  background: linear-gradient(135deg, rgba(127, 29, 29, 0.35), rgba(30, 41, 59, 0.92));
+  border: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (min-width: 640px) {
+  .hero-buttons {
+    flex-direction: row;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-grid,
+  .why-donate-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hero-visual {
+    display: block;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .features-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-content h1 {
+    font-size: 30px;
+  }
+
+  .hero-content p {
+    font-size: 16px;
+  }
+
+  .section-header h2 {
+    font-size: 26px;
+  }
+
+  .section-header p {
+    font-size: 16px;
+  }
+
+  .why-donate-content h2 {
+    font-size: 26px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+  }
+
+  .cta-card h3 {
+    font-size: 20px;
+  }
+
+  .cta-card svg {
+    width: 72px;
+    height: 72px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 28px;
+  }
+
+  .section-header h2 {
+    font-size: 24px;
+  }
+
+  .why-donate-content h2 {
+    font-size: 24px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  .benefit-text h3 {
+    font-size: 16px;
+  }
+
+  .cta-card h3 {
+    font-size: 18px;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+.btn:focus,
+.hero-btn-white:focus,
+.hero-btn-outline:focus {
+  outline: 3px solid #dc2626;
+  outline-offset: 4px;
+}
+
+.card:focus {
+  outline: 3px solid #dc2626;
+  outline-offset: 4px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card {
+    border-width: 2px;
+  }
+
+  .hero-btn-white {
+    border: 2px solid #dc2626;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

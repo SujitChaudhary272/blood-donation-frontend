@@ -4,6 +4,7 @@ import { Droplets, Menu, X, LogOut, User, Trash2, ChevronDown, Sun, Moon } from 
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { authAPI } from '../services/api';
+import UserAvatar from './UserAvatar';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -193,24 +194,14 @@ const Navbar = () => {
   };
 
   const renderUserAvatar = (size = 36) => {
-    if (user?.profilePhoto) {
-      return (
-        <img
-          src={user.profilePhoto}
-          alt={user?.name || 'User'}
-          style={{
-            width: `${size}px`,
-            height: `${size}px`,
-            borderRadius: '50%',
-            objectFit: 'cover',
-            border: '2px solid rgba(255, 255, 255, 0.25)',
-            flexShrink: 0
-          }}
-        />
-      );
-    }
-
-    return <User className="user-icon" />;
+    return (
+      <UserAvatar
+        user={user}
+        size={size}
+        imageClassName="navbar-user-avatar"
+        fallbackClassName="navbar-user-avatar-fallback"
+      />
+    );
   };
 
   return (

@@ -1,13 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Droplets, AlertCircle, CheckCircle } from 'lucide-react';
-import { donorAPI } from '../services/api';
+import { Droplets, AlertCircle, CheckCircle, Lock, Mail, Phone, User } from 'lucide-react';
+import { authAPI, donorAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const DonorRegistration = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
     bloodGroup: '',
     dateOfBirth: '',
     gender: '',
@@ -31,6 +36,64 @@ const DonorRegistration = () => {
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   const genders = ['Male', 'Female', 'Other'];
   const states = ['Maharashtra', 'Delhi', 'Karnataka', 'Tamil Nadu', 'Gujarat', 'Rajasthan', 'Uttar Pradesh', 'West Bengal', 'Madhya Pradesh', 'Other'];
+  const isGoogleOnlyUser = !!user && !user.providers?.includes('local');
+  const needsPasswordSetup = isGoogleOnlyUser;
+  const labelStyle = {
+    display: 'block',
+    marginBottom: '8px',
+    color: 'var(--text-primary)',
+    fontWeight: 600,
+    fontSize: '14px'
+  };
+  const fieldWrapperStyle = { position: 'relative' };
+  const iconStyle = {
+    position: 'absolute',
+    left: '12px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: '20px',
+    height: '20px',
+    color: '#9ca3af',
+    pointerEvents: 'none'
+  };
+  const inputWithIconStyle = {
+    width: '100%',
+    minHeight: '52px',
+    padding: '12px 12px 12px 44px',
+    border: '1px solid var(--surface-border)',
+    borderRadius: '8px',
+    fontSize: '14px',
+    lineHeight: 1.4,
+    background: 'var(--surface-bg)',
+    color: 'var(--text-primary)',
+    boxSizing: 'border-box'
+  };
+  const disabledInputStyle = {
+    ...inputWithIconStyle,
+    background: 'var(--surface-muted, rgba(148, 163, 184, 0.12))',
+    color: 'var(--text-secondary)'
+  };
+  const inputStyle = {
+    width: '100%',
+    minHeight: '52px',
+    padding: '12px 16px',
+    border: '1px solid var(--surface-border)',
+    borderRadius: '8px',
+    fontSize: '14px',
+    lineHeight: 1.4,
+    background: 'var(--surface-bg)',
+    color: 'var(--text-primary)',
+    boxSizing: 'border-box'
+  };
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      name: user?.name || '',
+      phone: user?.phone || '',
+      email: user?.email || ''
+    }));
+  }, [user]);
 
   const checkExistingDonor = useCallback(async () => {
     try {
@@ -63,7 +126,7 @@ const DonorRegistration = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name.startsWith('address.')) {
       const addressField = name.split('.')[1];
       setFormData({
@@ -85,14 +148,77 @@ const DonorRegistration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    const age = calculateAge(formData.dateOfBirth);
+    if (!formData.name.trim()) {
+      setError('Please provide your full name.');
+      return;
+    }
+
+    if (!/^[0-9]{10}$/.test(formData.phone)) {
+      setError('Please provide a valid 10-digit phone number.');
+      return;
+    }
+
+    if (!formData.bloodGroup || !formData.dateOfBirth || !formData.gender) {
+      setError('Please complete all basic information fields.');
+      return;
+    }
+
+    if (Number(formData.weight) < 45) {
+      setError('Weight must be at least 45 kg to register as a donor.');
+      return;
+    }
+
+    if (age < 18) {
+      setError('You must be at least 18 years old to register as a donor.');
+      return;
+    }
+
+    if (!formData.address.street.trim() || !formData.address.city.trim() || !formData.address.state || !/^[0-9]{6}$/.test(formData.address.pincode)) {
+      setError('Please provide a complete address with a valid 6-digit pincode.');
+      return;
+    }
+
+    if (needsPasswordSetup) {
+      if (formData.password.length < 6) {
+        setError('Password must be at least 6 characters long.');
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        setError('Passwords do not match.');
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
+      const normalizedName = formData.name.trim();
+      const normalizedPhone = formData.phone.trim();
+
+      if (isGoogleOnlyUser) {
+        await authAPI.completeGoogleSignup({
+          name: normalizedName,
+          phone: normalizedPhone,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword
+        });
+        await refreshUser();
+      } else if (normalizedName !== user?.name || normalizedPhone !== user?.phone) {
+        await authAPI.updateProfile({
+          name: normalizedName,
+          phone: normalizedPhone
+        });
+        await refreshUser();
+      }
+
       const donorPayload = {
-        name: user?.name,
-        phone: user?.phone,
+        name: normalizedName,
+        phone: normalizedPhone,
         bloodGroup: formData.bloodGroup,
-        age: calculateAge(formData.dateOfBirth),
+        age,
         gender: formData.gender,
         address: formData.address
       };
@@ -165,7 +291,110 @@ const DonorRegistration = () => {
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label style={labelStyle}>
+                    Full Name *
+                  </label>
+                  <div style={fieldWrapperStyle}>
+                    <User style={iconStyle} />
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      className="form-input"
+                      style={inputWithIconStyle}
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={labelStyle}>
+                    Phone Number *
+                  </label>
+                  <div style={fieldWrapperStyle}>
+                    <Phone style={iconStyle} />
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      required
+                      maxLength="10"
+                      pattern="[0-9]{10}"
+                      className="form-input"
+                      style={inputWithIconStyle}
+                      placeholder="10-digit mobile number"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={labelStyle}>
+                    Google / Email Address
+                  </label>
+                  <div style={fieldWrapperStyle}>
+                    <Mail style={iconStyle} />
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      disabled
+                      className="form-input"
+                      style={disabledInputStyle}
+                    />
+                  </div>
+                </div>
+
+                {needsPasswordSetup && (
+                  <>
+                    <div>
+                      <label style={labelStyle}>
+                        Create Password *
+                      </label>
+                      <div style={fieldWrapperStyle}>
+                        <Lock style={iconStyle} />
+                        <input
+                          type="password"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          required
+                          minLength="6"
+                          autoComplete="new-password"
+                          className="form-input"
+                          style={inputWithIconStyle}
+                          placeholder="Create a password for email login"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style={labelStyle}>
+                        Confirm Password *
+                      </label>
+                      <div style={fieldWrapperStyle}>
+                        <Lock style={iconStyle} />
+                        <input
+                          type="password"
+                          name="confirmPassword"
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
+                          required
+                          minLength="6"
+                          autoComplete="new-password"
+                          className="form-input"
+                          style={inputWithIconStyle}
+                          placeholder="Confirm your password"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <div>
+                  <label style={labelStyle}>
                     Blood Group *
                   </label>
                   <select
@@ -173,7 +402,8 @@ const DonorRegistration = () => {
                     value={formData.bloodGroup}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    className="form-select"
+                    style={inputStyle}
                   >
                     <option value="">Select blood group</option>
                     {bloodGroups.map((group) => (
@@ -183,7 +413,7 @@ const DonorRegistration = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label style={labelStyle}>
                     Date of Birth *
                   </label>
                   <input
@@ -193,12 +423,13 @@ const DonorRegistration = () => {
                     onChange={handleChange}
                     required
                     max={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    className="form-input"
+                    style={inputStyle}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label style={labelStyle}>
                     Gender *
                   </label>
                   <select
@@ -206,7 +437,8 @@ const DonorRegistration = () => {
                     value={formData.gender}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    className="form-select"
+                    style={inputStyle}
                   >
                     <option value="">Select gender</option>
                     {genders.map((gender) => (
@@ -216,7 +448,7 @@ const DonorRegistration = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label style={labelStyle}>
                     Weight (kg) *
                   </label>
                   <input
@@ -226,7 +458,8 @@ const DonorRegistration = () => {
                     onChange={handleChange}
                     required
                     min="45"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    className="form-input"
+                    style={inputStyle}
                     placeholder="Minimum 45 kg"
                   />
                 </div>
@@ -240,7 +473,7 @@ const DonorRegistration = () => {
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label style={labelStyle}>
                     Street Address *
                   </label>
                   <input
@@ -249,13 +482,14 @@ const DonorRegistration = () => {
                     value={formData.address.street}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    className="form-input"
+                    style={inputStyle}
                     placeholder="Enter street address"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label style={labelStyle}>
                     City *
                   </label>
                   <input
@@ -264,13 +498,14 @@ const DonorRegistration = () => {
                     value={formData.address.city}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    className="form-input"
+                    style={inputStyle}
                     placeholder="Enter city"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label style={labelStyle}>
                     State *
                   </label>
                   <select
@@ -278,7 +513,8 @@ const DonorRegistration = () => {
                     value={formData.address.state}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    className="form-select"
+                    style={inputStyle}
                   >
                     <option value="">Select state</option>
                     {states.map((state) => (
@@ -288,7 +524,7 @@ const DonorRegistration = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label style={labelStyle}>
                     Pincode *
                   </label>
                   <input
@@ -299,7 +535,8 @@ const DonorRegistration = () => {
                     required
                     pattern="[0-9]{6}"
                     maxLength="6"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    className="form-input"
+                    style={inputStyle}
                     placeholder="6-digit pincode"
                   />
                 </div>

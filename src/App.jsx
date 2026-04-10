@@ -20,6 +20,7 @@ import RequestBlood from './pages/RequestBlood.jsx';
 import AboutUs from './pages/Aboutus.jsx';
 import Viewalldonors from './pages/Viewalldonors.jsx';
 import Viewbloodrequests from './pages/Viewbloodrequests.jsx';
+import GoogleSignupCompletion from './pages/GoogleSignupCompletion.jsx';
 
 function AppContent() {
   const location = useLocation();
@@ -38,6 +39,14 @@ function AppContent() {
           <Route path="/receiver-signup" element={<Receiversignup />} />
           <Route path="/search" element={<Search />} />
           <Route path="/about" element={<AboutUs />} />
+          <Route
+            path="/complete-google-signup"
+            element={
+              <ProtectedRoute>
+                <GoogleSignupCompletion />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Protected Routes - Donor Dashboard (Only donors can access) */}
           <Route

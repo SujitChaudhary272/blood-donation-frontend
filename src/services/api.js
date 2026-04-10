@@ -91,8 +91,59 @@ export const authAPI = {
   },
   getGoogleConfig: () => api.get('/auth/google-config'),
   googleAuth: (data) => api.post('/auth/google', data),
+  completeGoogleSignup: async (data) => {
+    try {
+      return await api.put('/auth/google/complete-profile', data);
+    } catch (error) {
+      if (error.response?.status === 404) {
+        try {
+          return await api.put('/auth/google/complete-signup', data);
+        } catch (secondError) {
+          if (secondError.response?.status === 404) {
+            try {
+              return await api.put('/auth/complete-google-signup', data);
+            } catch (thirdError) {
+              if (thirdError.response?.status === 404) {
+                const { name, phone, password, confirmPassword } = data || {};
+
+                if (!name || !phone || !password || !confirmPassword) {
+                  throw thirdError;
+                }
+
+                if (password !== confirmPassword) {
+                  const mismatchError = new Error('Passwords do not match');
+                  mismatchError.response = {
+                    data: {
+                      message: 'Passwords do not match'
+                    }
+                  };
+                  throw mismatchError;
+                }
+
+                await api.put('/auth/update-profile', { name, phone });
+                await api.put('/auth/change-password', { newPassword: password });
+                const meResponse = await api.get('/auth/me');
+
+                return {
+                  data: {
+                    success: true,
+                    message: 'Profile completed successfully. You can now log in with email/password or Google.',
+                    user: meResponse?.data?.user || null
+                  }
+                };
+              }
+              throw thirdError;
+            }
+          }
+          throw secondError;
+        }
+      }
+      throw error;
+    }
+  },
   getMe: () => api.get('/auth/me'),
   updateProfile: (data) => api.put('/auth/update-profile', data),
+  changePassword: (data) => api.put('/auth/change-password', data),
   deleteAccount: ({ password, confirmName } = {}) =>
     api.delete('/auth/delete-account', {
       data: {
@@ -144,6 +195,7 @@ export const requestAPI = {
   completeRequest: (id) => api.put(`/requests/${id}/complete`),
   downloadCertificate: (id) => api.get(`/certificate/${id}`, { responseType: 'blob' }),
   deleteRequest: (id) => api.delete(`/requests/${id}`),
+  deletePendingDonorRequest: (id) => api.delete(`/requests/${id}`),
 };
 
 // Legacy request exports

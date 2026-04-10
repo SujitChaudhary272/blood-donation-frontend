@@ -19,6 +19,15 @@ const ReceiverSignup = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const redirectAfterAuth = (user) => {
+    if (user?.needsProfileCompletion) {
+      navigate('/complete-google-signup');
+      return;
+    }
+
+    navigate('/receiver-dashboard');
+  };
+
   const formatSignupError = (message) => {
     const errorMessage = message || 'Signup failed. Please try again.';
     const lower = errorMessage.toLowerCase();
@@ -77,7 +86,7 @@ const ReceiverSignup = () => {
       const result = await signup(signupData);
       
       if (result.success) {
-        navigate('/receiver-dashboard');
+        redirectAfterAuth(result.user);
       } else {
         setError(formatSignupError(result.message));
       }
@@ -109,7 +118,7 @@ const ReceiverSignup = () => {
       });
 
       if (result.success && result.user) {
-        navigate('/receiver-dashboard');
+        redirectAfterAuth(result.user);
       } else {
         setError(formatSignupError(result.message));
       }

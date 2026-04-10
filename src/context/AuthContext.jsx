@@ -113,6 +113,27 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const completeGoogleSignup = async (payload) => {
+    try {
+      const response = await authAPI.completeGoogleSignup(payload);
+      const { user: updatedUser } = extractAuthPayload(response);
+
+      if (!updatedUser) {
+        throw new Error('Invalid Google signup completion response from server');
+      }
+
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+
+      return { success: true, user: updatedUser };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to complete Google signup'
+      };
+    }
+  };
+
   const value = {
     user,
     token,
@@ -120,6 +141,7 @@ export const AuthProvider = ({ children }) => {
     login,
     signup,
     googleAuth,
+    completeGoogleSignup,
     logout,
     refreshUser: loadUser,
     isAuthenticated: !!user

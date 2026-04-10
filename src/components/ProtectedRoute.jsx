@@ -1,9 +1,10 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
   const { user, isAuthenticated, loading } = useAuth();
+  const location = useLocation();
 
   // Show loading spinner while checking authentication
   if (loading) {
@@ -43,6 +44,10 @@ const ProtectedRoute = ({ children, requiredRole }) => {
   // If not authenticated, redirect to login
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (user?.needsProfileCompletion && location.pathname !== '/complete-google-signup') {
+    return <Navigate to="/complete-google-signup" replace />;
   }
 
   // If a specific role is required, check if user has that role

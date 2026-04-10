@@ -19,6 +19,15 @@ const DonorSignup = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const redirectAfterAuth = (user) => {
+    if (user?.needsProfileCompletion) {
+      navigate('/complete-google-signup');
+      return;
+    }
+
+    navigate('/donor-dashboard');
+  };
+
   const formatSignupError = (message) => {
     const errorMessage = message || 'Signup failed. Please try again.';
     const lower = errorMessage.toLowerCase();
@@ -77,7 +86,7 @@ const DonorSignup = () => {
       const result = await signup(signupData);
       
       if (result.success) {
-        navigate('/donor-dashboard');
+        redirectAfterAuth(result.user);
       } else {
         setError(formatSignupError(result.message));
       }
@@ -109,7 +118,7 @@ const DonorSignup = () => {
       });
 
       if (result.success && result.user) {
-        navigate('/donor-dashboard');
+        redirectAfterAuth(result.user);
       } else {
         setError(formatSignupError(result.message));
       }

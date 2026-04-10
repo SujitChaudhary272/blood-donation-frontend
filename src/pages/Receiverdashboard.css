@@ -431,6 +431,32 @@
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
 }
 
+.delete-request-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.delete-request-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+}
+
+.delete-request-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 .danger-zone {
   background: var(--surface-bg);
   padding: 2rem;
@@ -568,4 +594,153 @@ html[data-theme='dark'] .action-card-success:hover {
   .dashboard-title {
     font-size: 1.75rem;
   }
+}
+
+/* Compact dashboard sizing to reduce scrolling */
+.receiver-dashboard {
+  padding: 1.25rem 0.875rem;
+}
+
+.receiver-dashboard .dashboard-header {
+  margin-bottom: 1.5rem;
+}
+
+.receiver-dashboard .dashboard-title {
+  font-size: 2rem;
+}
+
+.receiver-dashboard .dashboard-subtitle {
+  font-size: 0.975rem;
+  margin-left: 3rem;
+}
+
+.receiver-dashboard .profile-card,
+.receiver-dashboard .my-requests-section,
+.receiver-dashboard .danger-zone {
+  padding: 1.35rem;
+  margin-bottom: 1.5rem;
+}
+
+.receiver-dashboard .profile-header {
+  gap: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.receiver-dashboard .profile-avatar {
+  width: 78px;
+  height: 78px;
+}
+
+.receiver-dashboard .profile-avatar-fallback {
+  font-size: 2rem;
+}
+
+.receiver-dashboard .profile-info h2 {
+  font-size: 1.35rem;
+}
+
+.receiver-dashboard .profile-role {
+  font-size: 0.92rem;
+}
+
+.receiver-dashboard .profile-details {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+}
+
+.receiver-dashboard .detail-item {
+  gap: 0.65rem;
+  padding: 0.8rem 0.9rem;
+}
+
+.receiver-dashboard .quick-actions-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.receiver-dashboard .action-card {
+  padding: 1.35rem;
+}
+
+.receiver-dashboard .action-icon {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 1rem;
+}
+
+.receiver-dashboard .action-card h3 {
+  font-size: 1.12rem;
+  margin-bottom: 0.45rem;
+}
+
+.receiver-dashboard .action-card p {
+  font-size: 0.86rem;
+}
+
+.receiver-dashboard .my-requests-section h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.receiver-dashboard .empty-state {
+  padding: 2rem 0.75rem;
+}
+
+.receiver-dashboard .empty-state p {
+  font-size: 0.98rem;
+  margin: 0.75rem 0 1.25rem 0;
+}
+
+.receiver-dashboard .create-request-btn {
+  padding: 0.8rem 1.35rem;
+  font-size: 0.92rem;
+}
+
+.receiver-dashboard .requests-grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.receiver-dashboard .request-card {
+  padding: 1rem;
+}
+
+.receiver-dashboard .request-header {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.receiver-dashboard .request-header h4 {
+  font-size: 1rem;
+}
+
+.receiver-dashboard .blood-badge {
+  padding: 0.28rem 0.72rem;
+  font-size: 0.8rem;
+}
+
+.receiver-dashboard .request-details {
+  margin-bottom: 0.75rem;
+}
+
+.receiver-dashboard .request-details p {
+  font-size: 0.86rem;
+  margin: 0.35rem 0;
+}
+
+.receiver-dashboard .cancel-request-btn,
+.receiver-dashboard .delete-request-btn {
+  padding: 0.65rem;
+  font-size: 0.9rem;
+}
+
+.receiver-dashboard .danger-zone h3 {
+  font-size: 1.08rem;
+}
+
+.receiver-dashboard .danger-zone p {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
 }

@@ -1,17 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { donorAPI, requestAPI } from '../services/api';
 import { Droplets, MapPin, Phone, Activity, AlertCircle, Mail } from 'lucide-react';
+import UserAvatar from '../components/UserAvatar';
 import './Donordashboard.css';
+
+const REQUEST_POLL_INTERVAL = 5000;
 
 const Donordashboard = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [donorProfile, setDonorProfile] = useState(null);
   const [donorRequests, setDonorRequests] = useState([]);
   const [error, setError] = useState('');
+  const attemptedAvatarRefresh = useRef(false);
+
+  const loadDonorRequests = useCallback(async ({ silent = false } = {}) => {
+    try {
+      const response = await requestAPI.getDonorRequests();
+      setDonorRequests(response.data.requests || []);
+
+      if (!silent) {
+        setError('');
+      }
+
+      return response.data.requests || [];
+    } catch (err) {
+      if (!silent) {
+        throw err;
+      }
+
+      return [];
+    }
+  }, []);
 
   const downloadCertificate = async (requestId) => {
     if (!requestId) {
@@ -35,22 +58,30 @@ const Donordashboard = () => {
   };
 
   useEffect(() => {
-    if (!user || user.role !== 'donor') {
-      navigate('/');
+    if (user?.profilePhoto) {
+      attemptedAvatarRefresh.current = false;
       return;
     }
 
-    loadDashboard();
-  }, [user, navigate]);
+    if (
+      user?.role === 'donor' &&
+      user?.providers?.includes('google') &&
+      !user?.profilePhoto &&
+      !attemptedAvatarRefresh.current
+    ) {
+      attemptedAvatarRefresh.current = true;
+      refreshUser();
+    }
+  }, [refreshUser, user]);
 
-  const loadDashboard = async () => {
+  const loadDashboard = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
 
       const [profileResponse, requestsResponse] = await Promise.allSettled([
         donorAPI.getMyProfile(),
-        requestAPI.getDonorRequests()
+        loadDonorRequests()
       ]);
 
       let nextDonorProfile = null;
@@ -64,7 +95,7 @@ const Donordashboard = () => {
       }
 
       if (requestsResponse.status === 'fulfilled') {
-        nextRequests = requestsResponse.value.data.requests || [];
+        nextRequests = requestsResponse.value || [];
       } else {
         throw requestsResponse.reason;
       }
@@ -86,7 +117,30 @@ const Donordashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [loadDonorRequests]);
+
+  useEffect(() => {
+    if (!user || user.role !== 'donor') {
+      navigate('/');
+      return;
+    }
+
+    loadDashboard();
+  }, [user, navigate, loadDashboard]);
+
+  useEffect(() => {
+    if (user?.role !== 'donor') {
+      return undefined;
+    }
+
+    const intervalId = window.setInterval(() => {
+      loadDonorRequests({ silent: true });
+    }, REQUEST_POLL_INTERVAL);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [user, loadDonorRequests]);
 
   const handleAvailabilityToggle = async () => {
     if (!donorProfile) return;
@@ -197,8 +251,6 @@ const Donordashboard = () => {
   };
 
   const visibleRequests = getVisibleRequests();
-  const donorInitial = user?.name?.trim()?.charAt(0)?.toUpperCase() || 'D';
-
   if (loading) {
     return (
       <div className="donor-dashboard">
@@ -258,15 +310,12 @@ const Donordashboard = () => {
           <div className="profile-card">
             <div className="profile-header">
               <div className="profile-avatar">
-                {user?.profilePhoto ? (
-                  <img
-                    src={user.profilePhoto}
-                    alt={user.name}
-                    className="profile-avatar-image"
-                  />
-                ) : (
-                  <span className="profile-avatar-fallback">{donorInitial}</span>
-                )}
+                <UserAvatar
+                  user={user}
+                  size={78}
+                  imageClassName="profile-avatar-image"
+                  fallbackClassName="profile-avatar-fallback"
+                />
               </div>
               <div className="profile-info">
                 <h2>{donorProfile.name}</h2>

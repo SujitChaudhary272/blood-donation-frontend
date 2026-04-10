@@ -55,6 +55,15 @@ const Login = () => {
     navigate('/', { replace: true });
   };
 
+  const redirectAfterAuth = (authUser) => {
+    if (authUser?.needsProfileCompletion) {
+      navigate('/complete-google-signup', { replace: true });
+      return;
+    }
+
+    redirectByRole(authUser?.role);
+  };
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -79,7 +88,7 @@ const Login = () => {
       const result = await login(formData);
       
       if (result.success && result.user) {
-        redirectByRole(result.user.role);
+        redirectAfterAuth(result.user);
       } else {
         setError(formatLoginError(result.message));
       }
@@ -108,7 +117,7 @@ const Login = () => {
       });
 
       if (result.success && result.user) {
-        redirectByRole(result.user.role);
+        redirectAfterAuth(result.user);
       } else {
         setError(result.message || 'Google login failed. Please try again.');
       }

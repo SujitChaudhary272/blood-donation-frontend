@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { requestAPI } from '../services/api';
 import { Heart, Users, FileText, PlusCircle, Phone, Mail } from 'lucide-react';
+import UserAvatar from '../components/UserAvatar';
 import './Receiverdashboard.css';
 
 const ReceiverDashboard = () => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [receiverRequests, setReceiverRequests] = useState([]);
+  const [deletingRequestId, setDeletingRequestId] = useState('');
+  const attemptedAvatarRefresh = useRef(false);
 
   useEffect(() => {
     if (user?.role !== 'receiver') {
@@ -17,6 +20,23 @@ const ReceiverDashboard = () => {
     }
     fetchMyRequests();
   }, [user, navigate]);
+
+  useEffect(() => {
+    if (user?.profilePhoto) {
+      attemptedAvatarRefresh.current = false;
+      return;
+    }
+
+    if (
+      user?.role === 'receiver' &&
+      user?.providers?.includes('google') &&
+      !user?.profilePhoto &&
+      !attemptedAvatarRefresh.current
+    ) {
+      attemptedAvatarRefresh.current = true;
+      refreshUser();
+    }
+  }, [refreshUser, user]);
 
   const fetchMyRequests = async () => {
     try {
@@ -76,6 +96,18 @@ const ReceiverDashboard = () => {
       );
     }
 
+    if (normalizedStatus === 'requested') {
+      return (
+        <button
+          className="delete-request-btn"
+          onClick={() => handleDeleteRequest(request._id)}
+          disabled={deletingRequestId === request._id}
+        >
+          {deletingRequestId === request._id ? 'Deleting...' : 'Delete Request'}
+        </button>
+      );
+    }
+
     return null;
   };
 
@@ -95,11 +127,33 @@ const ReceiverDashboard = () => {
     }
   };
 
+  const handleDeleteRequest = async (requestId) => {
+    if (!requestId) {
+      alert('Unable to delete request because request ID is missing.');
+      return;
+    }
+
+    const confirmed = window.confirm('Delete this donor request? You can do this while the donor has not accepted it yet.');
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setDeletingRequestId(requestId);
+      await requestAPI.deletePendingDonorRequest(requestId);
+      setReceiverRequests((prev) => prev.filter((request) => request._id !== requestId));
+      alert('Request deleted successfully.');
+    } catch (error) {
+      console.error('Error deleting request:', error);
+      alert(error.response?.data?.message || 'Failed to delete request.');
+    } finally {
+      setDeletingRequestId('');
+    }
+  };
+
   if (!user || user.role !== 'receiver') {
     return null;
   }
-
-  const userInitial = user?.name?.trim()?.charAt(0)?.toUpperCase() || 'R';
 
   return (
     <div className="receiver-dashboard">
@@ -117,15 +171,12 @@ const ReceiverDashboard = () => {
         <div className="profile-card">
           <div className="profile-header">
             <div className="profile-avatar">
-              {user?.profilePhoto ? (
-                <img
-                  src={user.profilePhoto}
-                  alt={user.name}
-                  className="profile-avatar-image"
-                />
-              ) : (
-                <span className="profile-avatar-fallback">{userInitial}</span>
-              )}
+              <UserAvatar
+                user={user}
+                size={78}
+                imageClassName="profile-avatar-image"
+                fallbackClassName="profile-avatar-fallback"
+              />
             </div>
             <div className="profile-info">
               <h2>{user.name}</h2>
